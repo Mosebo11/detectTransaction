@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Analytics Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #858796;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.65rem;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--primary) 10%, #224abe 100%);
+        }
+
+        .sidebar .nav-item .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+        }
+
+        .sidebar .nav-item .nav-link:hover {
+            color: #fff;
+        }
+
+        .sidebar .nav-item.active .nav-link {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 20rem;
+        }
+
+        .dashboard-stat {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .border-left-primary {
+            border-left: 0.25rem solid var(--primary) !important;
+        }
+
+        .border-left-success {
+            border-left: 0.25rem solid var(--success) !important;
+        }
+
+        .border-left-info {
+            border-left: 0.25rem solid var(--info) !important;
+        }
+
+        .border-left-warning {
+            border-left: 0.25rem solid var(--warning) !important;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--light);
+        }
+
+        .login-card {
+            width: 400px;
+        }
+
+        .chatboard {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            z-index: 1000;
+        }
+
+        .chatboard .card-header {
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .fraud-score {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.35rem;
+            font-weight: 700;
+        }
+
+        .fraud-score.low {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .fraud-score.medium {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .fraud-score.high {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .transaction-row:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 25px;
+            text-align: center;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .upload-dropzone.active {
+            border-color: var(--primary);
+            background-color: #e8f4ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Public Pages -->
+    <div id="public-pages">
+        <!-- Landing Page -->
+        <div id="landing-page" class="page-section active">
+            <div class="login-container">
+                <div class="card login-card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="text-primary">Fraud Analytics Platform</h2>
+                            <p class="text-muted">Detect and prevent fraudulent transactions</p>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button onclick="showSection('login-page')" class="btn btn-primary btn-lg">Login</button>
+                            <button onclick="showSection('register-page')" class="btn btn-outline-primary btn-lg">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login-page" class="page-section">
+            <div class="login-container">
+                <div class="card login-card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="text-primary">Login</h2>
+                            <p class="text-muted">Access your fraud analytics dashboard</p>
+                        </div>
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="login-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="login-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="login-remember">
+                                <label class="form-check-label" for="login-remember">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">Login</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="#" onclick="showSection('landing-page')">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="register-page" class="page-section">
+            <div class="login-container">
+                <div class="card login-card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="text-primary">Register Your Organization</h2>
+                            <p class="text-muted">Create a new account for your business</p>
+                        </div>
+                        <form id="register-form">
+                            <div class="mb-3">
+                                <label for="register-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="register-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="register-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="register-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-client-name" class="form-label">Organization Name</label>
+                                <input type="text" class="form-control" id="register-client-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-industry" class="form-label">Industry</label>
+                                <select class="form-select" id="register-industry" required>
+                                    <option value="">Select Industry</option>
+                                    <option value="Banking">Banking</option>
+                                    <option value="E-commerce">E-commerce</option>
+                                    <option value="Government">Government</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Insurance">Insurance</option>
+                                    <option value="Retail">Retail</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">Register</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="#" onclick="showSection('landing-page')">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authenticated Pages -->
+    <div id="authenticated-pages" style="display: none;">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 sidebar bg-gradient-primary">
+                    <div class="sidebar-sticky pt-3">
+                        <div class="text-center mb-4">
+                            <h5 class="text-white">Fraud Analytics Platform</h5>
+                        </div>
+                        <ul class="nav flex-column" id="sidebar-nav">
+                            <!-- Dynamic sidebar items will be added here -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div class="col-md-9 col-lg-10 ml-sm-auto px-4 py-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                        <h1 class="h2" id="page-title">Dashboard</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2">
+                                <span class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-user me-1"></i> <span id="user-info">User (Role)</span>
+                                </span>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flash messages -->
+                    <div id="flash-messages"></div>
+
+                    <!-- Page content -->
+                    <div id="page-content">
+                        <!-- Dynamic page content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatboard -->
+        <div class="chatboard">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" id="chatboard-toggle">
+                    <span><i class="fas fa-comments me-2"></i> AI Assistant</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="card-body p-0" id="chatboard-body" style="display: none;">
+                    <div class="chat-messages p-3" id="chat-messages"></div>
+                    <div class="card-footer">
+                        <form id="chat-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="chat-input" placeholder="Ask about transactions...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            currentUser: null,
+            currentPage: 'landing-page',
+            transactions: [],
+            clients: [],
+            users: []
+        };
+
+        // Sample data for demonstration
+        const sampleTransactions = [
+            { id: 1, client_id: 1, amount: 1250.00, date: '2023-06-15', description: 'Office supplies', is_fraud: false, fraud_score: 0.15 },
+            { id: 2, client_id: 1, amount: 9850.00, date: '2023-06-16', description: 'Software license', is_fraud: false, fraud_score: 0.28 },
+            { id: 3, client_id: 1, amount: 45500.00, date: '2023-06-17', description: 'Vendor payment', is_fraud: true, fraud_score: 0.92 },
+            { id: 4, client_id: 2, amount: 3200.00, date: '2023-06-18', description: 'Marketing services', is_fraud: false, fraud_score: 0.12 },
+            { id: 5, client_id: 2, amount: 12500.00, date: '2023-06-19', description: 'Consulting fees', is_fraud: true, fraud_score: 0.87 }
+        ];
+
+        const sampleClients = [
+            { id: 1, name: 'Global Bank', industry: 'Banking', is_approved: true },
+            { id: 2, name: 'Tech Solutions Inc', industry: 'Technology', is_approved: true },
+            { id: 3, name: 'City Government', industry: 'Government', is_approved: false }
+        ];
+
+        const sampleUsers = [
+            { id: 1, email: 'admin@fraudplatform.com', name: 'Super Admin', role: 'super_admin', client_id: null, is_approved: true },
+            { id: 2, email: 'john@globalbank.com', name: 'John Smith', role: 'client_admin', client_id: 1, is_approved: true },
+            { id: 3, email: 'sara@globalbank.com', name: 'Sara Johnson', role: 'staff', client_id: 1, is_approved: true },
+            { id: 4, email: 'mike@techsolutions.com', name: 'Mike Brown', role: 'client_admin', client_id: 2, is_approved: true }
+        ];
+
+        // Initialize the application
+        function initApp() {
+            // Load sample data
+            state.transactions = sampleTransactions;
+            state.clients = sampleClients;
+            state.users = sampleUsers;
+
+            // Set up event listeners
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('register-form').addEventListener('submit', handleRegister);
+            document.getElementById('chat-form').addEventListener('submit', handleChatSubmit);
+            document.getElementById('chatboard-toggle').addEventListener('click', toggleChatboard);
+
+            // Check if user is already logged in (from localStorage)
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                state.currentUser = JSON.parse(savedUser);
+                showAuthenticatedPages();
+                loadDashboard();
+            }
+        }
+
+        // Show a specific section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the requested section
+            document.getElementById(sectionId).classList.add('active');
+            state.currentPage = sectionId;
+        }
+
+        // Handle login form submission
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simple validation
+            if (!email || !password) {
+                showFlash('Please enter both email and password', 'danger');
+                return;
+            }
+
+            // Find user (in a real app, this would be an API call)
+            const user = state.users.find(u => u.email === email);
+
+            if (user && user.is_approved) {
+                // In a real app, we would verify the password
+                state.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showAuthenticatedPages();
+                loadDashboard();
+                showFlash('Login successful!', 'success');
+            } else if (user && !user.is_approved) {
+                showFlash('Your account is pending approval', 'warning');
+            } else {
+                showFlash('Invalid email or password', 'danger');
+            }
+        }
+
+        // Handle registration form submission
+        function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const name = document.getElementById('register-name').value;
+            const password = document.getElementById('register-password').value;
+            const clientName = document.getElementById('register-client-name').value;
+            const industry = document.getElementById('register-industry').value;
+
+            // Simple validation
+            if (!email || !name || !password || !clientName || !industry) {
+                showFlash('Please fill all fields', 'danger');
+                return;
+            }
+
+            // Check if user already exists
+            if (state.users.some(u => u.email === email)) {
+                showFlash('Email already registered', 'danger');
+                return;
+            }
+
+            // Create new client and user (in a real app, this would be an API call)
+            const newClientId = Math.max(...state.clients.map(c => c.id)) + 1;
+            state.clients.push({
+                id: newClientId,
+                name: clientName,
+                industry: industry,
+                is_approved: false
+            });
+
+            const newUserId = Math.max(...state.users.map(u => u.id)) + 1;
+            const newUser = {
+                id: newUserId,
+                email: email,
+                name: name,
+                role: 'client_admin',
+                client_id: newClientId,
+                is_approved: false
+            };
+            
+            state.users.push(newUser);
+            
+            showFlash('Registration successful! Your account is pending approval.', 'success');
+            setTimeout(() => showSection('login-page'), 2000);
+        }
+
+        // Show authenticated pages
+        function showAuthenticatedPages() {
+            document.getElementById('public-pages').style.display = 'none';
+            document.getElementById('authenticated-pages').style.display = 'block';
+            
+            // Update user info
+            document.getElementById('user-info').textContent = `${state.currentUser.name} (${state.currentUser.role.replace('_', ' ')})`;
+            
+            // Setup sidebar based on user role
+            setupSidebar();
+        }
+
+        // Setup sidebar navigation based on user role
+        function setupSidebar() {
+            const sidebarNav = document.getElementById('sidebar-nav');
+            sidebarNav.innerHTML = '';
+            
+            let navItems = [];
+            
+            if (state.currentUser.role === 'super_admin') {
+                navItems = [
+                    { id: 'super-dashboard', icon: 'tachometer-alt', text: 'Dashboard', action: () => loadSuperAdminDashboard() },
+                    { id: 'manage-clients', icon: 'building', text: 'Manage Clients', action: () => loadManageClients() },
+                    { id: 'platform-analytics', icon: 'chart-line', text: 'Platform Analytics', action: () => loadPlatformAnalytics() }
+                ];
+            } else if (state.currentUser.role === 'client_admin') {
+                navItems = [
+                    { id: 'client-dashboard', icon: 'tachometer-alt', text: 'Dashboard', action: () => loadDashboard() },
+                    { id: 'upload-data', icon: 'upload', text: 'Upload Data', action: () => loadUploadData() },
+                    { id: 'reports', icon: 'file-alt', text: 'Reports', action: () => loadReports() },
+                    { id: 'manage-staff', icon: 'users', text: 'Manage Staff', action: () => loadManageStaff() }
+                ];
+            } else {
+                navItems = [
+                    { id: 'staff-dashboard', icon: 'tachometer-alt', text: 'Dashboard', action: () => loadDashboard() }
+                ];
+            }
+            
+            // Add logout button
+            navItems.push({ id: 'logout', icon: 'sign-out-alt', text: 'Logout', action: () => logout() });
+            
+            // Create nav items
+            navItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                
+                const a = document.createElement('a');
+                a.className = 'nav-link';
+                a.href = '#';
+                a.innerHTML = `<i class="fas fa-${item.icon} me-2"></i> ${item.text}`;
+                a.addEventListener('click', item.action);
+                
+                li.appendChild(a);
+                sidebarNav.appendChild(li);
+            });
+        }
+
+        // Load dashboard based on user role
+        function loadDashboard() {
+            document.getElementById('page-title').textContent = 'Dashboard';
+            
+            if (state.currentUser.role === 'super_admin') {
+                loadSuperAdminDashboard();
+            } else {
+                loadClientDashboard();
+            }
+        }
+
+        // Load super admin dashboard
+        function loadSuperAdminDashboard() {
+            document.getElementById('page-title').textContent = 'Super Admin Dashboard';
+            
+            const totalClients = state.clients.length;
+            const pendingClients = state.clients.filter(c => !c.is_approved).length;
+            const totalTransactions = state.transactions.length;
+            const fraudTransactions = state.transactions.filter(t => t.is_fraud).length;
+            
+            const recentTransactions = state.transactions.slice(0, 5);
+            
+            const content = `
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Clients</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${totalClients}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-building fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Clients</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${pendingClients}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Transactions</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${totalTransactions}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-list-alt fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Fraud Transactions</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${fraudTransactions}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Recent Transactions</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Client</th>
+                                                <th>Amount</th>
+                                                <th>Date</th>
+                                                <th>Fraud Score</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${recentTransactions.map(transaction => {
+                                                const client = state.clients.find(c => c.id === transaction.client_id);
+                                                return `
+                                                    <tr class="transaction-row" onclick="viewTransaction(${transaction.id})">
+                                                        <td>${transaction.id}</td>
+                                                        <td>${client ? client.name : 'Unknown'}</td>
+                                                        <td>$${transaction.amount.toFixed(2)}</td>
+                                                        <td>${transaction.date}</td>
+                                                        <td>
+                                                            <span class="fraud-score ${getFraudScoreClass(transaction.fraud_score)}">
+                                                                ${Math.round(transaction.fraud_score * 100)}%
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            ${transaction.is_fraud ? 
+                                                                '<span class="badge bg-danger">Fraud</span>' : 
+                                                                '<span class="badge bg-success">Legitimate</span>'}
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+        }
+
+        // Load client dashboard
+        function loadClientDashboard() {
+            document.getElementById('page-title').textContent = 'Dashboard';
+            
+            // Filter transactions for current client
+            const clientTransactions = state.transactions.filter(
+                t => t.client_id === state.currentUser.client_id
+            );
+            
+            const totalTransactions = clientTransactions.length;
+            const fraudTransactions = clientTransactions.filter(t => t.is_fraud).length;
+            const fraudRate = totalTransactions > 0 ? (fraudTransactions / totalTransactions * 100) : 0;
+            
+            const recentTransactions = clientTransactions.slice(0, 5);
+            
+            const content = `
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Transactions</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${totalTransactions}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-list-alt fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Fraud Transactions</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${fraudTransactions}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Fraud Rate</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">${fraudRate.toFixed(2)}%</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-percent fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Potential Savings</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">$${fraudTransactions > 0 ? (fraudTransactions * 500).toFixed(2) : '0.00'}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Fraud Distribution</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="fraudChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Recent Transactions</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Amount</th>
+                                                <th>Date</th>
+                                                <th>Fraud Score</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${recentTransactions.map(transaction => `
+                                                <tr class="transaction-row" onclick="viewTransaction(${transaction.id})">
+                                                    <td>${transaction.id}</td>
+                                                    <td>$${transaction.amount.toFixed(2)}</td>
+                                                    <td>${transaction.date}</td>
+                                                    <td>
+                                                        <span class="fraud-score ${getFraudScoreClass(transaction.fraud_score)}">
+                                                            ${Math.round(transaction.fraud_score * 100)}%
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        ${transaction.is_fraud ? 
+                                                            '<span class="badge bg-danger">Fraud</span>' : 
+                                                            '<span class="badge bg-success">Legitimate</span>'}
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+            
+            // Render fraud chart
+            setTimeout(() => {
+                const ctx = document.getElementById('fraudChart').getContext('2d');
+                renderFraudChart(ctx, fraudRate, 100 - fraudRate);
+            }, 100);
+        }
+
+        // Load manage clients page (super admin only)
+        function loadManageClients() {
+            document.getElementById('page-title').textContent = 'Manage Clients';
+            
+            const content = `
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">All Clients</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Industry</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.clients.map(client => `
+                                        <tr>
+                                            <td>${client.id}</td>
+                                            <td>${client.name}</td>
+                                            <td>${client.industry}</td>
+                                            <td>
+                                                ${client.is_approved ? 
+                                                    '<span class="badge bg-success">Approved</span>' : 
+                                                    '<span class="badge bg-warning">Pending</span>'}
+                                            </td>
+                                            <td>
+                                                ${!client.is_approved ? 
+                                                    `<button class="btn btn-sm btn-success" onclick="approveClient(${client.id})">Approve</button>` : 
+                                                    ''}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+        }
+
+        // Load upload data page
+        function loadUploadData() {
+            document.getElementById('page-title').textContent = 'Upload Transaction Data';
+            
+            const content = `
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Upload Transaction Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Upload a CSV or Excel file containing transaction data. The file should include the following columns:</p>
+                                <ul>
+                                    <li><strong>amount</strong> (required): The transaction amount</li>
+                                    <li><strong>date</strong> (required): The transaction date in YYYY-MM-DD format</li>
+                                    <li><strong>description</strong> (optional): A description of the transaction</li>
+                                </ul>
+                                
+                                <div class="upload-dropzone" id="upload-dropzone">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                    <p>Drag and drop your file here or click to browse</p>
+                                    <input type="file" id="file-input" style="display: none;" accept=".csv,.xlsx,.xls">
+                                    <button class="btn btn-primary mt-2" onclick="document.getElementById('file-input').click()">Select File</button>
+                                </div>
+                                
+                                <div class="mt-3" id="file-info"></div>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-primary" id="upload-button" disabled>Process File</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+            
+            // Set up file upload handling
+            const dropzone = document.getElementById('upload-dropzone');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const uploadButton = document.getElementById('upload-button');
+            
+            // Drag and drop handling
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropzone.classList.add('active');
+            }
+            
+            function unhighlight() {
+                dropzone.classList.remove('active');
+            }
+            
+            dropzone.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+            
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    fileInfo.innerHTML = `
+                        <p><strong>Selected file:</strong> ${file.name}</p>
+                        <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                    `;
+                    uploadButton.disabled = false;
+                    
+                    uploadButton.onclick = function() {
+                        processFile(file);
+                    };
+                }
+            }
+            
+            function processFile(file) {
+                // Simulate file processing
+                showFlash(`Processing file: ${file.name}`, 'info');
+                
+                // Simulate adding new transactions
+                setTimeout(() => {
+                    const newTransactionId = Math.max(...state.transactions.map(t => t.id)) + 1;
+                    state.transactions.push({
+                        id: newTransactionId,
+                        client_id: state.currentUser.client_id,
+                        amount: Math.random() * 10000,
+                        date: new Date().toISOString().split('T')[0],
+                        description: 'Uploaded transaction',
+                        is_fraud: Math.random() > 0.7,
+                        fraud_score: Math.random()
+                    });
+                    
+                    showFlash('File processed successfully! 1 new transaction added.', 'success');
+                    fileInfo.innerHTML = '';
+                    uploadButton.disabled = true;
+                }, 2000);
+            }
+        }
+
+        // Load reports page
+        function loadReports() {
+            document.getElementById('page-title').textContent = 'Transaction Reports';
+            
+            // Filter transactions for current client
+            const clientTransactions = state.transactions.filter(
+                t => t.client_id === state.currentUser.client_id
+            );
+            
+            const content = `
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Transaction History</h6>
+                        <button class="btn btn-sm btn-primary" onclick="generateReport()">
+                            <i class="fas fa-download me-1"></i> Generate Report
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Fraud Score</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${clientTransactions.map(transaction => `
+                                        <tr>
+                                            <td>${transaction.id}</td>
+                                            <td>$${transaction.amount.toFixed(2)}</td>
+                                            <td>${transaction.date}</td>
+                                            <td>${transaction.description}</td>
+                                            <td>
+                                                <span class="fraud-score ${getFraudScoreClass(transaction.fraud_score)}">
+                                                    ${Math.round(transaction.fraud_score * 100)}%
+                                                </span>
+                                            </td>
+                                            <td>
+                                                ${transaction.is_fraud ? 
+                                                    '<span class="badge bg-danger">Fraud</span>' : 
+                                                    '<span class="badge bg-success">Legitimate</span>'}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" onclick="viewTransaction(${transaction.id})">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-primary" onclick="downloadReport(${transaction.id})">
+                                                    <i class="fas fa-download"></i> Report
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+        }
+
+        // Load manage staff page (client admin only)
+        function loadManageStaff() {
+            document.getElementById('page-title').textContent = 'Manage Staff';
+            
+            // Filter users for current client
+            const clientUsers = state.users.filter(
+                u => u.client_id === state.currentUser.client_id && u.role === 'staff'
+            );
+            
+            const content = `
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Staff Members</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${clientUsers.map(user => `
+                                        <tr>
+                                            <td>${user.name}</td>
+                                            <td>${user.email}</td>
+                                            <td>
+                                                ${user.is_approved ? 
+                                                    '<span class="badge bg-success">Approved</span>' : 
+                                                    '<span class="badge bg-warning">Pending</span>'}
+                                            </td>
+                                            <td>
+                                                ${!user.is_approved ? 
+                                                    `<button class="btn btn-sm btn-success" onclick="approveUser(${user.id})">Approve</button>` : 
+                                                    ''}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+        }
+
+        // Load platform analytics page (super admin only)
+        function loadPlatformAnalytics() {
+            document.getElementById('page-title').textContent = 'Platform Analytics';
+            
+            // Calculate analytics data
+            const clientData = state.clients.map(client => {
+                const transactions = state.transactions.filter(t => t.client_id === client.id);
+                const fraudCount = transactions.filter(t => t.is_fraud).length;
+                const fraudRate = transactions.length > 0 ? (fraudCount / transactions.length * 100) : 0;
+                
+                return {
+                    name: client.name,
+                    transactions: transactions.length,
+                    fraud_count: fraudCount,
+                    fraud_rate: fraudRate
+                };
+            });
+            
+            const content = `
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Client Analytics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Transactions</th>
+                                        <th>Fraud Count</th>
+                                        <th>Fraud Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${clientData.map(client => `
+                                        <tr>
+                                            <td>${client.name}</td>
+                                            <td>${client.transactions}</td>
+                                            <td>${client.fraud_count}</td>
+                                            <td>${client.fraud_rate.toFixed(2)}%</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Fraud Distribution</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="platformChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+            
+            // Render platform chart
+            setTimeout(() => {
+                const ctx = document.getElementById('platformChart').getContext('2d');
+                const labels = clientData.map(c => c.name);
+                const data = clientData.map(c => c.fraud_rate);
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Fraud Rate (%)',
+                            data: data,
+                            backgroundColor: 'rgba(78, 115, 223, 0.7)',
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Fraud Rate (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        }
+
+        // View transaction details
+        function viewTransaction(transactionId) {
+            const transaction = state.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+            
+            const client = state.clients.find(c => c.id === transaction.client_id);
+            
+            document.getElementById('page-title').textContent = `Transaction #${transactionId}`;
+            
+            const content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Transaction Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <td>${transaction.id}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Client</th>
+                                        <td>${client ? client.name : 'Unknown'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Amount</th>
+                                        <td>$${transaction.amount.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date</th>
+                                        <td>${transaction.date}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>${transaction.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fraud Score</th>
+                                        <td>
+                                            <span class="fraud-score ${getFraudScoreClass(transaction.fraud_score)}">
+                                                ${Math.round(transaction.fraud_score * 100)}%
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        <td>
+                                            ${transaction.is_fraud ? 
+                                                '<span class="badge bg-danger">Fraud</span>' : 
+                                                '<span class="badge bg-success">Legitimate</span>'}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Fraud Explanation</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>${generateFraudExplanation(transaction)}</p>
+                                
+                                <div class="mt-4">
+                                    <h6>Provide Feedback</h6>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-success" onclick="provideFeedback(${transaction.id}, true)">
+                                            <i class="fas fa-check me-1"></i> Correct Detection
+                                        </button>
+                                        <button type="button" class="btn btn-danger" onclick="provideFeedback(${transaction.id}, false)">
+                                            <i class="fas fa-times me-1"></i> Incorrect Detection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary" onclick="loadReports()">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Reports
+                        </button>
+                        <button class="btn btn-info" onclick="downloadReport(${transaction.id})">
+                            <i class="fas fa-download me-1"></i> Download Report
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('page-content').innerHTML = content;
+        }
+
+        // Generate fraud explanation
+        function generateFraudExplanation(transaction) {
+            let explanations = [];
+            
+            if (transaction.amount > 10000) {
+                explanations.push(`High amount: $${transaction.amount.toFixed(2)} is unusually large.`);
+            }
+            
+            if (transaction.fraud_score > 0.8) {
+                explanations.push(`High fraud score: The algorithm detected multiple suspicious patterns.`);
+            }
+            
+            if (explanations.length === 0) {
+                explanations.push("No specific red flags identified. The fraud detection model flagged this based on complex pattern matching.");
+            }
+            
+            return explanations.join(' ');
+        }
+
+        // Provide feedback on fraud detection
+        function provideFeedback(transactionId, isCorrect) {
+            showFlash(`Thank you for your feedback! The model will learn from this.`, 'success');
+            
+            // In a real application, this would send the feedback to the server
+            setTimeout(() => {
+                loadReports();
+            }, 1500);
+        }
+
+        // Approve client (super admin only)
+        function approveClient(clientId) {
+            const client = state.clients.find(c => c.id === clientId);
+            if (client) {
+                client.is_approved = true;
+                
+                // Also approve the client admin
+                const adminUser = state.users.find(u => u.client_id === clientId && u.role === 'client_admin');
+                if (adminUser) {
+                    adminUser.is_approved = true;
+                }
+                
+                showFlash(`Client ${client.name} has been approved.`, 'success');
+                loadManageClients();
+            }
+        }
+
+        // Approve user (client admin only)
+        function approveUser(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (user) {
+                user.is_approved = true;
+                showFlash(`User ${user.name} has been approved.`, 'success');
+                loadManageStaff();
+            }
+        }
+
+        // Generate report
+        function generateReport() {
+            showFlash('Report generation started. Download will begin shortly...', 'info');
+            
+            // Simulate report generation
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = 'data:text/plain;charset=utf-8,Fraud Detection Report%0A%0AThis is a sample report.%0AIn a real application, this would be a PDF file.';
+                link.download = 'fraud_report.pdf';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showFlash('Report downloaded successfully!', 'success');
+            }, 2000);
+        }
+
+        // Download individual transaction report
+        function downloadReport(transactionId) {
+            const transaction = state.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+            
+            showFlash(`Downloading report for transaction #${transactionId}...`, 'info');
+            
+            // Simulate report download
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = 'data:text/plain;charset=utf-8,Transaction Report%0A%0AThis is a sample report for transaction #' + transactionId + '.%0AIn a real application, this would be a detailed PDF file.';
+                link.download = `transaction_report_${transactionId}.pdf`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showFlash('Report downloaded successfully!', 'success');
+            }, 1500);
+        }
+
+        // Handle chat form submission
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addChatMessage('user', message);
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                let response = "I'm not sure how to help with that. Try asking about suspicious transactions or why a specific transaction was flagged.";
+                
+                if (message.includes('why') && message.includes('transaction')) {
+                    // Extract transaction ID from message
+                    const parts = message.split(' ');
+                    const transactionId = parts.find(part => !isNaN(part));
+                    
+                    if (transactionId) {
+                        response = `Please use the "View" button on the transaction in the Reports section to see a detailed explanation of why transaction ${transactionId} was flagged.`;
+                    } else {
+                        response = "I need a transaction ID to explain why it was flagged. Please specify which transaction you're asking about.";
+                    }
+                } else if (message.includes('suspicious') || message.includes('fraud')) {
+                    if (message.includes('week') || message.includes('this week')) {
+                        // Get transactions from the past week
+                        const weekAgo = new Date();
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        
+                        let suspiciousTransactions = [];
+                        if (state.currentUser.role === 'super_admin') {
+                            suspiciousTransactions = state.transactions.filter(t => t.is_fraud);
+                        } else {
+                            suspiciousTransactions = state.transactions.filter(
+                                t => t.client_id === state.currentUser.client_id && t.is_fraud
+                            );
+                        }
+                        
+                        if (suspiciousTransactions.length > 0) {
+                            response = `Found ${suspiciousTransactions.length} suspicious transactions. The most recent is transaction #${suspiciousTransactions[0].id} for $${suspiciousTransactions[0].amount.toFixed(2)}.`;
+                        } else {
+                            response = "No suspicious transactions found in the past week.";
+                        }
+                    } else if (message.includes('high') || message.includes('large')) {
+                        // Check for amount threshold
+                        const amountThreshold = 10000; // Default threshold
+                        
+                        let suspiciousTransactions = [];
+                        if (state.currentUser.role === 'super_admin') {
+                            suspiciousTransactions = state.transactions.filter(
+                                t => t.is_fraud && t.amount >= amountThreshold
+                            );
+                        } else {
+                            suspiciousTransactions = state.transactions.filter(
+                                t => t.client_id === state.currentUser.client_id && 
+                                     t.is_fraud && 
+                                     t.amount >= amountThreshold
+                            );
+                        }
+                        
+                        if (suspiciousTransactions.length > 0) {
+                            response = `Found ${suspiciousTransactions.length} suspicious transactions above $${amountThreshold.toFixed(2)}. The largest is transaction #${suspiciousTransactions[0].id} for $${suspiciousTransactions[0].amount.toFixed(2)}.`;
+                        } else {
+                            response = `No suspicious transactions found above $${amountThreshold.toFixed(2)}.`;
+                        }
+                    }
+                } else if (message.includes('help')) {
+                    response = "I can help you with:\n- Explaining why a transaction was flagged (e.g., 'Why was transaction 105 flagged?')\n- Showing suspicious transactions (e.g., 'Show me suspicious transactions this week')\n- Finding large suspicious transactions (e.g., 'Show me suspicious transactions above $10,000')";
+                }
+                
+                addChatMessage('bot', response);
+            }, 1000);
+        }
+
+        // Add message to chat
+        function addChatMessage(sender, text) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `mb-2 ${sender === 'user' ? 'text-end' : 'text-start'}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = `d-inline-block p-2 rounded ${
+                sender === 'user' ? 'bg-primary text-white' : 'bg-light text-dark'
+            }`;
+            bubble.textContent = text;
+            
+            messageDiv.appendChild(bubble);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Toggle chatboard visibility
+        function toggleChatboard() {
+            const chatboardBody = document.getElementById('chatboard-body');
+            const icon = document.querySelector('#chatboard-toggle i');
+            
+            if (chatboardBody.style.display === 'none') {
+                chatboardBody.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                chatboardBody.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Show flash message
+        function showFlash(message, type) {
+            const flashContainer = document.getElementById('flash-messages');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            flashContainer.appendChild(alert);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Get fraud score class for styling
+        function getFraudScoreClass(score) {
+            if (score < 0.3) return 'low';
+            if (score < 0.7) return 'medium';
+            return 'high';
+        }
+
+        // Render fraud chart
+        function renderFraudChart(ctx, fraudRate, nonFraudRate) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Fraud', 'Legitimate'],
+                    datasets: [{
+                        data: [fraudRate, nonFraudRate],
+                        backgroundColor: ['#e74a3b', '#1cc88a'],
+                        hoverBackgroundColor: ['#e02d1b', '#17a673'],
+                        hoverBorderColor: 'rgba(234, 236, 244, 1)',
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        backgroundColor: 'rgb(255,255,255)',
+                        bodyFontColor: '#858796',
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: {
+                        display: false
+                    },
+                    cutoutPercentage: 80,
+                },
+            });
+        }
+
+        // Logout
+        function logout() {
+            state.currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            document.getElementById('authenticated-pages').style.display = 'none';
+            document.getElementById('public-pages').style.display = 'block';
+            
+            showSection('landing-page');
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
