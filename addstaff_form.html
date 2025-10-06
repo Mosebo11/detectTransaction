@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Staff Member - Fraud Analytics Platform</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="static/css/style.css" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<!-- Authenticated Pages -->
+<div id="authenticated-pages">
+<div class="container-fluid">
+<div class="row">
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
+<div class="sidebar-sticky pt-4">
+<div class="text-center mb-4 px-3">
+<h5 class="text-white mb-2"><i class="fas fa-shield-alt me-2"></i>Fraud Analytics</h5>
+<div class="user-badge">
+<small id="user-role-badge">Loading...</small>
+</div>
+</div>
+<ul class="nav flex-column" id="sidebar-nav">
+<!-- Dynamic sidebar items will be added here -->
+</ul>
+</div>
+</div>
+<!-- Main content -->
+<div class="col-md-9 col-lg-10 ml-sm-auto px-4 py-4 main-content">
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
+<div>
+<h1 class="h3 mb-1 text-gray-800" id="page-title">Add Staff Member</h1>
+<p class="text-muted mb-0" id="page-subtitle">Add a new staff member to your organization</p>
+</div>
+<div class="btn-toolbar mb-2 mb-md-0">
+<a class="btn btn-outline-secondary me-2" href="staff.html">
+<i class="fas fa-arrow-left me-1"></i>Back to Staff
+                            </a>
+<div class="btn-group">
+<span class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+<i class="fas fa-user-circle me-2"></i>
+<span id="user-info">Loading...</span>
+</span>
+<button class="btn btn-sm btn-outline-danger d-flex align-items-center" onclick="logout()">
+<i class="fas fa-sign-out-alt me-1"></i> Logout
+                                </button>
+</div>
+</div>
+</div>
+<!-- Flash messages container -->
+<div id="flash-messages"></div>
+<!-- Page content -->
+<div id="page-content">
+<div class="row justify-content-center">
+<div class="col-lg-8">
+<div class="card shadow">
+<div class="card-header bg-primary text-white py-3">
+<h5 class="card-title mb-0">
+<i class="fas fa-user-plus me-2"></i>New Staff Member Details
+                                        </h5>
+</div>
+<div class="card-body p-4">
+<form id="add-staff-form">
+<div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label fw-semibold" for="staff-first-name">
+                                                        First Name <span class="text-danger">*</span>
+</label>
+<input class="form-control" id="staff-first-name" placeholder="Enter first name" required="" type="text"/>
+<div class="form-text">Staff member's first name</div>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label fw-semibold" for="staff-last-name">
+                                                        Last Name <span class="text-danger">*</span>
+</label>
+<input class="form-control" id="staff-last-name" placeholder="Enter last name" required="" type="text"/>
+<div class="form-text">Staff member's last name</div>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label fw-semibold" for="staff-email">
+                                                    Email Address <span class="text-danger">*</span>
+</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fas fa-envelope"></i></span>
+<input class="form-control" id="staff-email" placeholder="Enter email address" required="" type="email"/>
+</div>
+<div class="form-text">The staff member will use this email to login to the system</div>
+</div>
+<div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label fw-semibold" for="staff-password">
+                                                        Password <span class="text-danger">*</span>
+</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fas fa-lock"></i></span>
+<input class="form-control" id="staff-password" placeholder="Create a password" required="" type="password"/>
+</div>
+<div class="form-text">Minimum 8 characters</div>
+<div class="form-text" id="password-strength"></div>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label fw-semibold" for="staff-confirm-password">
+                                                        Confirm Password <span class="text-danger">*</span>
+</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fas fa-lock"></i></span>
+<input class="form-control" id="staff-confirm-password" placeholder="Confirm password" required="" type="password"/>
+</div>
+<div class="form-text">Re-enter the password</div>
+<div class="form-text" id="confirm-indicator"></div>
+</div>
+</div>
+<div class="mb-3">
+<label class="form-label fw-semibold" for="staff-department">Department</label>
+<select class="form-select" id="staff-department">
+<option value="">Select Department</option>
+<option value="finance">Finance &amp; Accounting</option>
+<option value="operations">Operations</option>
+<option value="compliance">Compliance &amp; Risk</option>
+<option value="it">IT &amp; Technology</option>
+<option value="audit">Internal Audit</option>
+<option value="other">Other</option>
+</select>
+<div class="form-text">Select the department the staff member belongs to</div>
+</div>
+<div class="mb-4">
+<label class="form-label fw-semibold" for="staff-position">Position/Title</label>
+<input class="form-control" id="staff-position" placeholder="Enter position title" type="text"/>
+<div class="form-text">e.g., Fraud Analyst, Compliance Officer, etc.</div>
+</div>
+<div class="mb-4">
+<label class="form-label fw-semibold">Access Permissions</label>
+<div class="border rounded p-3 bg-light">
+<div class="form-check mb-2">
+<input checked="" class="form-check-input" id="permission-dashboard" type="checkbox"/>
+<label class="form-check-label" for="permission-dashboard">
+                                                            Access to Dashboard
+                                                        </label>
+</div>
+<div class="form-check mb-2">
+<input checked="" class="form-check-input" id="permission-upload" type="checkbox"/>
+<label class="form-check-label" for="permission-upload">
+                                                            Upload Transaction Data
+                                                        </label>
+</div>
+<div class="form-check mb-2">
+<input checked="" class="form-check-input" id="permission-reports" type="checkbox"/>
+<label class="form-check-label" for="permission-reports">
+                                                            View and Generate Reports
+                                                        </label>
+</div>
+<div class="form-check">
+<input class="form-check-input" id="permission-export" type="checkbox"/>
+<label class="form-check-label" for="permission-export">
+                                                            Export Data
+                                                        </label>
+</div>
+</div>
+</div>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end border-top pt-4">
+<a class="btn btn-outline-secondary me-md-2 px-4" href="staff.html">
+<i class="fas fa-times me-2"></i>Cancel
+                                                </a>
+<button class="btn btn-primary px-4" type="submit">
+<i class="fas fa-user-plus me-2"></i>Add Staff Member
+                                                </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Help Section -->
+<div class="card shadow mt-4">
+<div class="card-body">
+<h6><i class="fas fa-info-circle text-primary me-2"></i>About Staff Accounts</h6>
+<p class="mb-2">Staff members will receive an email with login instructions and will have access to:</p>
+<ul class="mb-0">
+<li>Dashboard with fraud analytics</li>
+<li>Transaction data upload functionality</li>
+<li>Report generation and viewing</li>
+<li>AI assistant for fraud detection queries</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chatboard -->
+<div class="chatboard">
+<div class="card shadow-lg">
+<div class="card-header text-white d-flex justify-content-between align-items-center" id="chatboard-toggle">
+<span><i class="fas fa-robot me-2"></i> AI Assistant</span>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="card-body p-0" id="chatboard-body" style="display: none;">
+<div class="chat-messages" id="chat-messages">
+<div class="text-center text-muted small mb-3">
+<em>AI Assistant is ready to help</em>
+</div>
+</div>
+<div class="card-footer bg-light">
+<form id="chat-form">
+<div class="input-group">
+<input class="form-control border-0" id="chat-input" placeholder="Ask about staff management..." type="text"/>
+<button class="btn btn-primary" type="submit">
+<i class="fas fa-paper-plane"></i>
+</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script src="script.js"></script><script src="single_admin_patch.js"></script>
+</body>
+</html>
