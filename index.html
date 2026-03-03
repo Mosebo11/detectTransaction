@@ -1,226 +1,455 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Fraud Analytics Platform</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lieketseng E. Mojalefa · interpreter &  special needs educator</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: #f2f7f5; /* soft mint background */
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: #1e2f2d;
+            padding: 2rem 1rem;
+        }
 
-<link href="style.css" rel="stylesheet"/></head>
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(18, 83, 73, 0.25);
+            overflow: hidden;
+            padding: 2.5rem 2rem;
+        }
+
+        /* header section with name & title */
+        .top-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #cceae3;
+            padding-bottom: 1.5rem;
+        }
+
+        .name-title h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #115e54;
+            line-height: 1.2;
+        }
+
+        .name-title .badge {
+            background: #def5f0;
+            color: #0a4d44;
+            font-weight: 500;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 1rem;
+            border: 1px solid #b2dfd5;
+        }
+
+        .contact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            background: #f1fbf9;
+            padding: 0.9rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 500;
+        }
+
+        .contact-row i {
+            color: #117a6b;
+            width: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-row a {
+            color: #1e2f2d;
+            text-decoration: none;
+            border-bottom: 1px dotted #6b9b92;
+        }
+
+        .contact-row a:hover {
+            color: #063f37;
+            border-bottom: 1px solid #063f37;
+        }
+
+        /* tagline / interpreter card */
+        .interpreter-tag {
+            background: linear-gradient(135deg, #e2f0ed 0%, #ccede5 100%);
+            border-radius: 30px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0 2.2rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .interpreter-tag h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #09423b;
+        }
+
+        .interpreter-tag h2 i {
+            font-size: 2rem;
+            margin-right: 12px;
+            color: #0b695b;
+        }
+
+        .flag {
+            background: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #09423b;
+            border: 1px solid #5fc7b6;
+            box-shadow: 0 3px 8px rgba(0,80,70,0.1);
+        }
+
+        /* main 2-col flexible layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 0.9fr;
+            gap: 2.2rem;
+            margin: 2.2rem 0 1.8rem;
+        }
+
+        @media (max-width: 700px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: start;
+                gap: 1rem;
+            }
+        }
+
+        /* cards */
+        .section-card {
+            background: #f9fffd;
+            border-radius: 24px;
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid #d7f0ea;
+            box-shadow: 0 6px 14px rgba(0, 60, 50, 0.04);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1b6e61;
+            margin-bottom: 1.2rem;
+            border-left: 6px solid #289e8b;
+            padding-left: 1rem;
+        }
+
+        .section-title i {
+            font-size: 1.6rem;
+            color: #117a6b;
+        }
+
+        /* lists */
+        .edu-item {
+            margin-bottom: 1rem;
+        }
+
+        .edu-item strong {
+            font-size: 1.05rem;
+            color: #0b4b41;
+        }
+
+        .meta {
+            color: #43615b;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .meta i {
+            margin-right: 3px;
+            color: #568f84;
+        }
+
+        .exp-item {
+            margin-bottom: 1.3rem;
+        }
+
+        .exp-title {
+            font-weight: 700;
+            color: #115249;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .exp-place {
+            color: #3f6b62;
+            font-style: italic;
+        }
+
+        .badge-light {
+            background: #e0f2ee;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .project-item, .streak-list {
+            margin: 0.5rem 0 0.8rem 1.2rem;
+        }
+
+        .strength-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 1rem 0;
+        }
+
+        .strength-tag {
+            background: #d6f1ea;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            border: 1px solid #aad9cf;
+        }
+
+        .lang-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.8rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .lang-item {
+            font-weight: 600;
+            background: #ecf9f5;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+        }
+
+        .reference-block {
+            background: white;
+            border-radius: 18px;
+            padding: 0.8rem 1.2rem;
+            margin-top: 1rem;
+            border-left: 4px solid #289e8b;
+        }
+
+        .ref-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0.5rem 0;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px dashed #b2dfd5;
+            margin: 1.2rem 0;
+        }
+
+        .button-teacher {
+            background: #115e54;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: default;
+            border: 1px solid #0d4e45;
+        }
+
+        .footer-note {
+            background: #dff3ef;
+            border-radius: 18px;
+            padding: 1.2rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .footer-note small {
+            color: #1d5f55;
+        }
+    </style>
+</head>
 <body>
-<!-- Public Pages -->
-<div id="public-pages">
-<!-- Landing Page -->
-<div class="page-section active" id="landing-page">
-<div class="login-container">
-<div class="card login-card shadow-lg">
-<div class="login-header">
-<h2><i class="fas fa-shield-alt me-2"></i>Fraud Analytics Platform</h2>
-<p class="mb-0">Advanced AI-powered fraud detection</p>
-</div>
-<div class="card-body p-5">
-<div class="text-center mb-4">
-<h4 class="text-dark">Welcome Back</h4>
-<p class="text-muted">Sign in to access your dashboard</p>
-</div>
-<div class="d-grid gap-3">
-<button class="btn btn-primary btn-lg py-2" onclick="showSection('login-page')">
-<i class="fas fa-sign-in-alt me-2"></i>Login
-                            </button>
-<button class="btn btn-outline-primary btn-lg py-2" onclick="showSection('register-page')">
-<i class="fas fa-user-plus me-2"></i>Register Organization
-                            </button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Login Page -->
-<div class="page-section" id="login-page">
-<div class="login-container">
-<div class="card login-card shadow-lg">
-<div class="login-header">
-<h2><i class="fas fa-sign-in-alt me-2"></i>Login</h2>
-<p class="mb-0">Access your fraud analytics dashboard</p>
-</div>
-<div class="card-body p-5">
-<form id="login-form">
-<div class="mb-4">
-<label class="form-label fw-semibold" for="login-email">Email Address</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-envelope"></i></span>
-<input class="form-control" id="login-email" placeholder="Enter your email" required="" type="email"/>
-</div>
-</div>
-<div class="mb-4">
-<label class="form-label fw-semibold" for="login-password">Password</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-lock"></i></span>
-<input class="form-control" id="login-password" placeholder="Enter your password" required="" type="password"/>
-</div>
-</div>
-<div class="mb-4 form-check">
-<input class="form-check-input" id="login-remember" type="checkbox"/>
-<label class="form-check-label" for="login-remember">Remember me</label>
-</div>
-<button class="btn btn-primary w-100 btn-lg py-2" type="submit">
-<i class="fas fa-sign-in-alt me-2"></i>Login to Dashboard
-                            </button>
-</form>
-<div class="text-center mt-4">
-<a class="text-decoration-none" href="#" onclick="showSection('landing-page')">
-<i class="fas fa-arrow-left me-1"></i> Back to Home
-                            </a>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Register Page -->
-<div class="page-section" id="register-page">
-<div class="login-container">
-<div class="card login-card shadow-lg">
-<div class="login-header">
-<h2><i class="fas fa-user-plus me-2"></i>Register</h2>
-<p class="mb-0">Create a new organization account</p>
-</div>
-<div class="card-body p-5">
-<form id="register-form">
-<div class="mb-3">
-<label class="form-label fw-semibold" for="register-email">Email Address</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-envelope"></i></span>
-<input class="form-control" id="register-email" placeholder="Enter business email" required="" type="email"/>
-</div>
-</div>
-<div class="mb-3">
-<label class="form-label fw-semibold" for="register-name">Full Name</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-user"></i></span>
-<input class="form-control" id="register-name" placeholder="Enter your full name" required="" type="text"/>
-</div>
-</div>
-<div class="mb-3">
-<label class="form-label fw-semibold" for="register-password">Password</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-lock"></i></span>
-<input class="form-control" id="register-password" placeholder="Create a password" required="" type="password"/>
-</div>
-</div>
-<div class="mb-3">
-<label class="form-label fw-semibold" for="register-client-name">Organization Name</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-building"></i></span>
-<input class="form-control" id="register-client-name" placeholder="Enter organization name" required="" type="text"/>
-</div>
-</div>
-<div class="mb-4">
-<label class="form-label fw-semibold" for="register-industry">Industry</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fas fa-industry"></i></span>
-<select class="form-select" id="register-industry" required="">
-<option value="">Select Industry</option>
-<option value="Banking">Banking &amp; Finance</option>
-<option value="E-commerce">E-commerce &amp; Retail</option>
-<option value="Government">Government</option>
-<option value="Healthcare">Healthcare</option>
-<option value="Insurance">Insurance</option>
-<option value="Technology">Technology</option>
-<option value="Other">Other</option>
-</select>
-</div>
-</div>
-<button class="btn btn-primary w-100 btn-lg py-2" type="submit">
-<i class="fas fa-rocket me-2"></i>Create Organization Account
-                            </button>
-</form>
-<div class="text-center mt-4">
-<a class="text-decoration-none" href="#" onclick="showSection('landing-page')">
-<i class="fas fa-arrow-left me-1"></i> Back to Home
-                            </a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Authenticated Pages -->
-<div id="authenticated-pages" style="display: none;">
-<div class="container-fluid">
-<div class="row">
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
-<div class="sidebar-sticky pt-4">
-<div class="text-center mb-4 px-3">
-<h5 class="text-white mb-2"><i class="fas fa-shield-alt me-2"></i>Fraud Analytics</h5>
-<div class="user-badge">
-<small id="user-role-badge">Super Admin</small>
-</div>
-</div>
-<ul class="nav flex-column" id="sidebar-nav">
-<!-- Dynamic sidebar items will be added here -->
-</ul>
-</div>
-</div>
-<!-- Main content -->
-<div class="col-md-9 col-lg-10 ml-sm-auto px-4 py-4 main-content">
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
-<div>
-<h1 class="h3 mb-1 text-gray-800" id="page-title">Dashboard</h1>
-<p class="text-muted mb-0" id="page-subtitle">Welcome to your fraud analytics dashboard</p>
-</div>
-<div class="btn-toolbar mb-2 mb-md-0">
-<div class="btn-group me-2">
-<span class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-<i class="fas fa-user-circle me-2"></i>
-<span id="user-info">User (Role)</span>
-</span>
-<button class="btn btn-sm btn-outline-danger d-flex align-items-center" onclick="logout()">
-<i class="fas fa-sign-out-alt me-1"></i> Logout
-                                </button>
-</div>
-</div>
-</div>
-<!-- Flash messages container -->
-<div id="flash-messages"></div>
-<!-- Page content -->
-<div id="page-content">
-<!-- Dynamic page content will be loaded here -->
-</div>
-</div>
-</div>
-</div>
-<!-- Chatboard -->
-<div class="chatboard">
-<div class="card shadow-lg">
-<div class="card-header text-white d-flex justify-content-between align-items-center" id="chatboard-toggle">
-<span><i class="fas fa-robot me-2"></i> AI Assistant</span>
-<i class="fas fa-chevron-down"></i>
-</div>
-<div class="card-body p-0" id="chatboard-body" style="display: none;">
-<div class="chat-messages" id="chat-messages">
-<div class="text-center text-muted small mb-3">
-<em>AI Assistant is ready to help</em>
-</div>
-</div>
-<div class="card-footer bg-light">
-<form id="chat-form">
-<div class="input-group">
-<input class="form-control border-0" id="chat-input" placeholder="Ask about fraud detection..." type="text"/>
-<button class="btn btn-primary" type="submit">
-<i class="fas fa-paper-plane"></i>
-</button>
-</div>
-</form>
-</div>
-</div>
-</div>
-</div>
-</div>
+<div class="page">
+    <!-- header with name and contact -->
+    <div class="top-header">
+        <div class="name-title">
+            <h1>Lieketseng E. Mojalefa</h1>
+            <div class="badge"><i class="fas fa-hands"></i> Lesotho Sign Language interpreter · educator</div>
+        </div>
+        <div class="contact-row">
+            <span><i class="fas fa-phone-alt"></i> +266 5880 0272</span>
+            <span><i class="fas fa-envelope"></i> <a href="mailto:lieketsengmojalefa1@gmail.com">lieketsengmojalefa1@gmail.com</a></span>
+            <span><i class="fas fa-map-pin"></i> Maseru, Lesotho</span>
+        </div>
+    </div>
 
-<script src="script.js"></script><script src="single_admin_patch.js"></script>
+    <!-- interpreter highlight card -->
+    <div class="interpreter-tag">
+        <h2><i class="fas fa-hands-praying"></i> Sign language interpreter</h2>
+        <div class="flag"><i class="fas fa-certificate"></i> NADAL personal interpreter · NAD Lesotho cert 2024</div>
+    </div>
+
+    <!-- two column content -->
+    <div class="main-grid">
+        <!-- left column: education, certificates, experience -->
+        <div>
+            <!-- EDUCATION & CERTIFICATES -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-graduation-cap"></i> Education & credentials</div>
+                <div class="edu-item"><strong>Diploma in Education (Primary)</strong> <br>Lesotho College of Education (2021–2024) <span class="badge-light">NQF level 6 (SAQA)</span></div>
+                <div class="edu-item"><strong>Higher Secondary</strong> <br>Itekeng HS (2012–2014) · Motsekua HS (2017–2018)</div>
+                <div class="meta"><i class="fas fa-certificate"></i> National Association of the Deaf Lesotho — Sign Language Certificate (2024)</div>
+                <div class="meta"><i class="fas fa-certificate"></i> TEFL Professional Institute (2024)</div>
+                <hr>
+                <div><i class="fas fa-hands"></i> <strong>Lesotho Sign Language</strong> — qualified interpreter (NADAL) </div>
+                <div class="strength-tags" style="margin-top: 12px;">
+                    <span class="strength-tag">📋 Communication</span>
+                    <span class="strength-tag">🧩 Problem‑solving</span>
+                    <span class="strength-tag">👥 Leadership</span>
+                </div>
+            </div>
+
+            <!-- EXPERIENCE -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-briefcase"></i> Experience</div>
+                <div class="exp-item">
+                    <div class="exp-title">Teacher (Social Science, English, Sign Language) <span class="exp-place">Bophelong Primary School</span></div>
+                    <div class="meta"><i class="far fa-calendar-alt"></i> July 2023 – present · Ha Abia</div>
+                    <ul class="project-item" style="list-style-type: disc; margin-top: 5px;">
+                        <li>Spelling Bee coach (Jolly Phonics) – received awards 2024</li>
+                        <li>Teach inclusive classes, support children with diverse needs</li>
+                    </ul>
+                </div>
+                <div class="exp-item">
+                    <div class="exp-title">Spelling Bee Coach (SBALE) <span class="exp-place">National competition</span></div>
+                    <div class="meta"><i class="far fa-calendar-alt"></i> May 2024</div>
+                    <ul class="project-item">
+                        <li>Coached lower grades, attended competitions, awards received</li>
+                    </ul>
+                </div>
+                <div class="exp-item">
+                    <div class="exp-title">Intern Teacher <span class="exp-place">Lithoteng Primary School</span></div>
+                    <div class="meta">2023 · Numeracy, Integrated studies, Netball coach</div>
+                </div>
+                <div class="exp-item">
+                    <div class="exp-title"><i class="fas fa-hands"></i> Sign Language interpreter (personal to former NADAL president) </div>
+                    <div class="meta">Formal events, inclusive communication, disability anniversary (Oct 2023)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- right column: projects, languages, references, teaching application -->
+        <div>
+            <!-- PROJECTS / INTERPRETING -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-star"></i> Interpreting & community</div>
+                <div><i class="fas fa-hands"></i> <strong>Celebration of the anniversary for people with disabilities</strong> (Oct 2023)</div>
+                <div class="meta" style="margin-bottom: 12px;">Sign language interpreter · Lesotho</div>
+                <div><span class="badge-light"><i class="fas fa-check"></i> Personal interpreter – former NADAL president</span></div>
+                <div style="margin-top: 14px;"><i class="fas fa-chalkboard-teacher"></i> <strong>Spelling Bee coach awards:</strong> Jolly Phonics (Aug 2024) · SBALE (May 2024)</div>
+            </div>
+
+            <!-- LANGUAGES -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-language"></i> Languages</div>
+                <div class="lang-row">
+                    <span class="lang-item">🇱🇸 Sesotho</span>
+                    <span class="lang-item">🇬🇧 English</span>
+                    <span class="lang-item">🇿🇦 Zulu</span>
+                    <span class="lang-item">🇿🇦 Xhosa</span>
+                </div>
+                <div class="meta" style="margin-top: 6px;"><i class="fas fa-hands"></i> Lesotho Sign Language (certified)</div>
+            </div>
+
+            <!-- REFERENCES -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-address-book"></i> References</div>
+                <div class="reference-block">
+                    <div class="ref-line"><i class="fas fa-user-circle"></i> <strong>Mr Ts'ele</strong> – Teacher, Lithoteng Primary School</div>
+                    <div class="ref-line"><i class="fas fa-phone"></i> +266 5030 7683</div>
+                </div>
+                <div class="reference-block" style="margin-top: 8px;">
+                    <div class="ref-line"><i class="fas fa-user-circle"></i> <strong>Mrs 'Makhathali Mokhathi</strong> – Principal, Bophelong Primary School</div>
+                    <div class="ref-line"><i class="fas fa-phone"></i> +266 6597 19777</div>
+                </div>
+                <div style="margin-top: 1rem;"><i class="fas fa-id-card"></i> Serial: 2562238F6 · SAQA verified (NQF 6)</div>
+            </div>
+
+            <!-- TEACHER APPLICATION EXCERPT (Tehillah Autism Academy) -->
+            <div class="section-card" style="background: #eefaf7;">
+                <div class="section-title"><i class="fas fa-heart"></i> Passion: special needs & autism</div>
+                <p style="margin-bottom: 12px;"><strong>“Mother of an autistic boy with ADHD, dedicated to inclusive education.”</strong><br>
+                <small>Application for Tehillah Autism Academy (Feb 2026) – two years’ inclusive teaching, personal understanding, individualized learning plans.</small></p>
+                <div class="button-teacher"><i class="fas fa-puzzle-piece"></i> teacher · autism support · empathy</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- extra row: SAQA & certificate (summary) -->
+    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; background: #f1f9f7; border-radius: 50px; padding: 1rem 2rem; margin: 0.8rem 0;">
+        <span><i class="fas fa-diploma"></i> <strong>Diploma in Education (Primary)</strong> – Lesotho College of Education, 2024</span>
+        <span><i class="fas fa-qrcode"></i> SAQA NQF level 6 / 360 credits</span>
+        <span><i class="fas fa-hands"></i> NADAL Sign Language cert 2024 · TEFL 2024</span>
+    </div>
+
+    <!-- footer with letter snippet and contact -->
+    <div class="footer-note">
+        <div><i class="fas fa-quote-left"></i> I am passionate about accessibility and equal access for Deaf individuals. <br>📄 Full interpreter portfolio & rate card available.</div>
+        <div style="text-align: right;">
+            <span style="font-weight: 500;">📞 +266 5880 0272</span><br>
+            <span style="font-size: 0.8rem;">📍 Maseru, Lesotho</span>
+        </div>
+    </div>
+
+    <!-- micro line with date of birth (discreet) and reference nr -->
+    <div style="display: flex; justify-content: flex-end; margin-top: 1.2rem; font-size: 0.75rem; color: #5f857d; gap: 2rem;">
+        <span>🗓️ DOB 1997-09-08</span>
+        <span>🔢 Ref 202505010015</span>
+    </div>
+
+    <!-- hidden certificate details are represented visually, images not embedded, but info present -->
+    <!-- all key info from the PDF is covered: interpreter, teacher, diploma, references -->
+</div>
+<!-- one-page fully responsive, includes all essential content from the PDF application -->
 </body>
 </html>
